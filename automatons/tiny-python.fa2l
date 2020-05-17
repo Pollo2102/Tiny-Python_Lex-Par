@@ -1,0 +1,73 @@
+#include "lexer.h"
+
+/*!fa2lexer 
+
+    %option generate.tokens = true;
+
+    %file "start.jff";
+    %file "number.jff";
+    %file "ArithOperators.jff";
+    %file "ident.jff";
+    %file "literal.jff";
+    %file "RelOperators.jff";
+    %file "comment.jff";
+    %file "function_elems.jff";
+    %file "array_elems.jff";
+
+    %token.descriptions {
+        Ident = "Identifier",
+        KwDef = "Keyword def",
+        KwIf = "Keyword if",
+        KwElif = "Keyword elif",
+        KwElse = "Keyword else",
+        KwFor = "KeyWord for",
+        KwPrint = "Keyword print",
+        KwInput = "Keyword input",
+        KwIn = "Keyword in",
+        KwWhile = "Keyword while"
+    }
+
+    %generate.state_enum(State);
+
+*/
+
+Token Lexer::findKeyword(const std::string& str)
+{
+    if (str == "if")
+        return Token::KwIf;
+    else if (str == "def")
+        return Token::KwDef;
+    else if (str == "elif")
+        return Token::KwElif;
+    else if (str == "else")
+        return Token::KwElse;
+    else if (str == "for")
+        return Token::KwFor;
+    else if (str == "print")
+        return Token::KwPrint;
+    else if (str == "input")
+        return Token::KwInput;
+    else if (str == "in")
+        return Token::KwIn;
+    else if (str == "while")
+        return Token::KwWhile;
+    else 
+        return Token::Ident;
+}
+
+Token Lexer::getNextToken()
+{
+    text = "";
+    /*!fa2lexer
+
+        %generate.lexer(text);
+
+     */
+}
+
+const char *Lexer::tokenToString(Token tk)
+{
+    /*!fa2lexer
+        %generate.toString(tk);
+      */
+}

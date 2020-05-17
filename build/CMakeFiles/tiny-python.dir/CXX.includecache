@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../build/tokens.h
+
+../lexer.h
+iostream
+-
+string
+-
+fstream
+-
+build/tokens.h
+../build/tokens.h
+
+/media/diego/Secondary_ext41/Universidad/Compiladores_1/Proyecto/build/lexer.cpp
+lexer.h
+/media/diego/Secondary_ext41/Universidad/Compiladores_1/Proyecto/build/lexer.h
+
+/media/diego/Secondary_ext41/Universidad/Compiladores_1/Proyecto/build/tokens.h
+
+/media/diego/Secondary_ext41/Universidad/Compiladores_1/Proyecto/lexer.h
+iostream
+-
+string
+-
+fstream
+-
+build/tokens.h
+/media/diego/Secondary_ext41/Universidad/Compiladores_1/Proyecto/build/tokens.h
+
+/media/diego/Secondary_ext41/Universidad/Compiladores_1/Proyecto/main.cpp
+lexer.h
+/media/diego/Secondary_ext41/Universidad/Compiladores_1/Proyecto/lexer.h
+iostream
+-
+istream
+-
+

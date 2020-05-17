@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--Created with JFLAP 7.1.--><structure>
+	<type>fa</type>
+	<automaton>
+		<!--The list of states.-->
+		<state id="0" name="q0">
+			<x>150.0</x>
+			<y>233.0</y>
+			<initial/>
+		</state>
+		<state id="1" name="q1">
+			<x>361.0</x>
+			<y>199.0</y>
+			<label>Token::Open_Br</label>
+			<final/>
+		</state>
+		<state id="2" name="q2">
+			<x>354.0</x>
+			<y>280.0</y>
+			<label>Token::Close_Br</label>
+			<final/>
+		</state>
+		<!--The list of transitions.-->
+		<transition>
+			<from>0</from>
+			<to>2</to>
+			<read>]</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>[</read>
+		</transition>
+		<note>
+			<text>Name: array_elems</text>
+			<x>103.0</x>
+			<y>74.0</y>
+		</note>
+	</automaton>
+</structure>
