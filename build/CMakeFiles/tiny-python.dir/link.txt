@@ -1,1 +1,0 @@
-/usr/bin/c++    -rdynamic CMakeFiles/tiny-python.dir/main.cpp.o CMakeFiles/tiny-python.dir/lexer.cpp.o  -o tiny-python 

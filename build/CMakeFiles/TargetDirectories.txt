@@ -1,3 +1,0 @@
-/media/diego/Secondary_ext41/Universidad/Compiladores_1/Proyecto/build/CMakeFiles/rebuild_cache.dir
-/media/diego/Secondary_ext41/Universidad/Compiladores_1/Proyecto/build/CMakeFiles/tiny-python.dir
-/media/diego/Secondary_ext41/Universidad/Compiladores_1/Proyecto/build/CMakeFiles/edit_cache.dir
