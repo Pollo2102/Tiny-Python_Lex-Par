@@ -8,8 +8,8 @@
 			<initial/>
 		</state>
 		<state id="1" name="q1">
-			<x>482.0</x>
-			<y>252.0</y>
+			<x>473.0</x>
+			<y>348.0</y>
 		</state>
 		<state id="2" name="q2">
 			<x>714.0</x>
@@ -17,11 +17,30 @@
 			<label>Token::Literal</label>
 			<final/>
 		</state>
+		<state id="3" name="q3">
+			<x>458.0</x>
+			<y>179.0</y>
+		</state>
 		<!--The list of transitions.-->
+		<transition>
+			<from>0</from>
+			<to>3</to>
+			<read>'</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>"</read>
+		</transition>
 		<transition>
 			<from>1</from>
 			<to>2</to>
 			<read>"</read>
+		</transition>
+		<transition>
+			<from>3</from>
+			<to>2</to>
+			<read>'</read>
 		</transition>
 		<transition>
 			<from>1</from>
@@ -29,9 +48,9 @@
 			<read>Other</read>
 		</transition>
 		<transition>
-			<from>0</from>
-			<to>1</to>
-			<read>"</read>
+			<from>3</from>
+			<to>3</to>
+			<read>Other</read>
 		</transition>
 		<note>
 			<text>Name: Literal</text>

@@ -15,7 +15,7 @@
     %file "array_elems.jff";
 
     %token.descriptions {
-        Ident = "Identifier",
+        Identifier = "Identifier",
         KwDef = "Keyword def",
         KwIf = "Keyword if",
         KwElif = "Keyword elif",
@@ -24,7 +24,9 @@
         KwPrint = "Keyword print",
         KwInput = "Keyword input",
         KwIn = "Keyword in",
-        KwWhile = "Keyword while"
+        KwWhile = "Keyword while",
+        Indent = "Indentation Token",
+        Dedent = "Dedentation Token"
     }
 
     %generate.state_enum(State);
@@ -52,7 +54,31 @@ Token Lexer::findKeyword(const std::string& str)
     else if (str == "while")
         return Token::KwWhile;
     else 
-        return Token::Ident;
+        return Token::Identifier;
+}
+
+void Lexer::indentation_check() {
+    if (current_indentation != indentation_stack.top())
+        checking_indentation = true;
+}
+
+Token Lexer::contains_dedentation() {
+    if (current_indentation > indentation_stack.top()) {
+        indentation_stack.push(current_indentation);
+        checking_indentation = false;
+        return Token::Indent;
+    }
+    else if (current_indentation < indentation_stack.top()) {
+        indentation_stack.pop();
+        if (current_indentation == indentation_stack.top())
+            checking_indentation = false;
+        else if (current_indentation > indentation_stack.top())
+            throw "Indentation error!\n";
+        return Token::Dedent;
+    }
+    else {
+        throw "Indentation error!\n";
+    }    
 }
 
 Token Lexer::getNextToken()

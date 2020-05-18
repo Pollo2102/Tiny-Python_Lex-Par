@@ -8,16 +8,75 @@
 			<initial/>
 		</state>
 		<state id="1" name="q1">
-			<x>414.0</x>
-			<y>227.0</y>
+			<x>715.0</x>
+			<y>218.0</y>
 			<label>Token::Eof</label>
 			<final/>
 		</state>
+		<state id="2" name="q2">
+			<x>398.0</x>
+			<y>341.0</y>
+			<label>current_indentation = 0;</label>
+		</state>
+		<state id="3" name="q3">
+			<x>649.0</x>
+			<y>332.0</y>
+			<label>current_indentation++;</label>
+		</state>
+		<state id="4" name="q4">
+			<x>648.0</x>
+			<y>433.0</y>
+			<label>current_indentation++;</label>
+		</state>
+		<state id="5" name="q5">
+			<x>431.0</x>
+			<y>110.0</y>
+			<label>return contains_dedentation();</label>
+		</state>
+		<state id="7" name="q7">
+			<x>818.0</x>
+			<y>343.0</y>
+			<label>indentation_check();</label>
+		</state>
+		<state id="9" name="q9">
+			<x>788.0</x>
+			<y>473.0</y>
+			<label>indentation_check();</label>
+		</state>
 		<!--The list of transitions.-->
 		<transition>
-			<from>0</from>
-			<to>0</to>
+			<from>2</from>
+			<to>2</to>
 			<read>-EOL</read>
+		</transition>
+		<transition>
+			<from>2</from>
+			<to>3</to>
+			<read>-SPACE</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>9</to>
+			<read/>
+		</transition>
+		<transition>
+			<from>2</from>
+			<to>4</to>
+			<read>-TAB</read>
+		</transition>
+		<transition>
+			<from>9</from>
+			<to>0</to>
+			<controlx>100</controlx>
+			<controly>606</controly>
+			<read/>
+		</transition>
+		<transition>
+			<from>7</from>
+			<to>0</to>
+			<controlx>928</controlx>
+			<controly>255</controly>
+			<read/>
 		</transition>
 		<transition>
 			<from>0</from>
@@ -25,14 +84,54 @@
 			<read>EOF</read>
 		</transition>
 		<transition>
+			<from>3</from>
+			<to>7</to>
+			<read/>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>5</to>
+			<read>-@</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>2</to>
+			<read>-EOL</read>
+		</transition>
+		<transition>
 			<from>0</from>
 			<to>0</to>
 			<read>-SPACE</read>
 		</transition>
 		<transition>
+			<from>3</from>
+			<to>3</to>
+			<read>-SPACE</read>
+		</transition>
+		<transition>
+			<from>3</from>
+			<to>2</to>
+			<read>-EOL</read>
+		</transition>
+		<transition>
 			<from>0</from>
 			<to>0</to>
 			<read>-TAB</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>4</to>
+			<read>-TAB</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>2</to>
+			<read>-EOL</read>
+		</transition>
+		<transition>
+			<from>2</from>
+			<to>0</to>
+			<read/>
 		</transition>
 		<note>
 			<text>Name: start</text>

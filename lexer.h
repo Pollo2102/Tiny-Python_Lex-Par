@@ -10,10 +10,13 @@
 class Lexer
 {
 public:
-    Lexer(std::istream& input): input(input) {}
+    Lexer(std::istream& input): input(input) { 
+            indentation_stack.push(0); 
+            checking_indentation = false;
+        }
 
     std::string getText() { return text; }
-    int getNextChar() { return input.get(); }
+    int getNextChar() { return checking_indentation ? '@' : input.get(); }
     void ungetChar(int ch) { input.unget(); }
 
     void reportError(int ch) {
@@ -22,12 +25,17 @@ public:
 
     Token getNextToken();
     Token findKeyword(const std::string& str);
+    void indentation_check();
+    Token contains_dedentation();
     static const char *tokenToString(Token tk);
 
 private:
     std::istream& input;
     std::string text;
     std::stack<int> tr_wh;
+    std::stack<int> indentation_stack;
+    int current_indentation;
+    bool checking_indentation;
 };
 
 #endif
