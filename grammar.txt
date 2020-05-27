@@ -1,0 +1,25 @@
+expr-> assign | PrintFunc | ForCall
+assign-> IDENTIFIER = IDENTIFIER ( LITERAL )
+assign-> IDENTIFIER = FACTOR
+PrintFunc-> PRINT PrintArgs*
+PrintArgs-> LITERAL Optl_Print_Args
+Optl_Print_Args-> COMMA Optl_Args
+Optl_Print_Args-> Epsilon
+Optl_Args-> Term (COMMA PrintArgs | Epsilon)
+Optl_Args-> Epsilon
+ForCall-> FOR IDENTIFIER IN IDENTIFIER ( Factor , Factor ) : Func_Code
+DefCall-> DEF IDENTIFIER ( Optl_Args ) : Func_Code
+Cond_Stmt-> Cond_KeyWd Comparison: Func_Code
+Else_Stmt-> ELSE : Func_Code
+
+Func_Code-> EOL INDENT expr (EOL expr)* DEDENT
+
+Cond_KeyWd-> IF
+Cond_KeyWd-> ELIF
+Cond_KeyWd-> WHILE
+Comparison-> IDENTIFIER REL_OP IDENTIFIER
+DedentProd-> DEDENT | EOF
+ArithOps-> + | - | * | / | ** | %
+Term-> Factor (ArithOps Factor)*
+Factor-> IDENTIFIER
+Factor-> NUMBER

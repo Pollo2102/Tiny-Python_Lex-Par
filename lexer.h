@@ -25,7 +25,7 @@ public:
 
     Token getNextToken();
     Token findKeyword(const std::string& str);
-    void indentation_check();
+    Token indentation_check();
     Token contains_dedentation();
     static const char *tokenToString(Token tk);
 

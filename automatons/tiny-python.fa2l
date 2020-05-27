@@ -57,21 +57,25 @@ Token Lexer::findKeyword(const std::string& str)
         return Token::Identifier;
 }
 
-void Lexer::indentation_check() {
+Token Lexer::indentation_check() {
     if (current_indentation != indentation_stack.top())
         checking_indentation = true;
+    return Token::Eol;
 }
 
 Token Lexer::contains_dedentation() {
     if (current_indentation > indentation_stack.top()) {
         indentation_stack.push(current_indentation);
         checking_indentation = false;
+        ungetChar(1);
         return Token::Indent;
     }
     else if (current_indentation < indentation_stack.top()) {
         indentation_stack.pop();
-        if (current_indentation == indentation_stack.top())
+        if (current_indentation == indentation_stack.top()) {
             checking_indentation = false;
+            ungetChar(1);
+        }
         else if (current_indentation > indentation_stack.top())
             throw "Indentation error!\n";
         return Token::Dedent;
