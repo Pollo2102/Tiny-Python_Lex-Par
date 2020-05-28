@@ -1,25 +1,60 @@
-expr-> assign | PrintFunc | ForCall
-assign-> IDENTIFIER = IDENTIFIER ( LITERAL )
-assign-> IDENTIFIER = FACTOR
-PrintFunc-> PRINT PrintArgs*
-PrintArgs-> LITERAL Optl_Print_Args
-Optl_Print_Args-> COMMA Optl_Args
-Optl_Print_Args-> Epsilon
-Optl_Args-> Term (COMMA PrintArgs | Epsilon)
-Optl_Args-> Epsilon
-ForCall-> FOR IDENTIFIER IN IDENTIFIER ( Factor , Factor ) : Func_Code
-DefCall-> DEF IDENTIFIER ( Optl_Args ) : Func_Code
-Cond_Stmt-> Cond_KeyWd Comparison: Func_Code
-Else_Stmt-> ELSE : Func_Code
+expr -> assign
+expr -> PrintFunc 
+expr -> ForCall
 
-Func_Code-> EOL INDENT expr (EOL expr)* DEDENT
+assign -> IDENTIFIER = assign'
+assign' -> IDENTIFIER ( LITERAL )
+assign' -> FACTOR
 
-Cond_KeyWd-> IF
-Cond_KeyWd-> ELIF
-Cond_KeyWd-> WHILE
-Comparison-> IDENTIFIER REL_OP IDENTIFIER
-DedentProd-> DEDENT | EOF
-ArithOps-> + | - | * | / | ** | %
-Term-> Factor (ArithOps Factor)*
-Factor-> IDENTIFIER
-Factor-> NUMBER
+PrintFunc -> PRINT Print_Args
+
+Print_Args -> LITERAL Optl_Print_Args
+Optl_Print_Args -> COMMA TERM Optl_Print_Args'
+Optl_Print_Args -> Epsilon
+Optl_Print_Args' -> Print_Args
+Optl_Print_Args' -> Epsilon
+
+ForCall -> FOR IDENTIFIER IN IDENTIFIER OpenPar Factor COMMA Factor ClosePar COLON Func_Code
+
+DefCall -> DEF IDENTIFIER OpenPar Optl_Args ClosePar COLON Func_Code
+
+Cond_Stmt -> Cond_KeyWd Comparison COLON Func_Code
+
+Else_Stmt -> ELSE COLON Func_Code
+
+Func_Code -> EOL INDENT expr Func_Code' DedentProd
+Func_Code' -> EOL expr Func_Code'
+Func_Code' -> Epsilon
+
+Array -> IDENTIFIER OpenBrack Factor Array' CloseBrack
+Array' -> COMMA Factor Array'
+Array' -> Epsilon
+
+Cond_KeyWd -> IF
+Cond_KeyWd -> ELIF
+Cond_KeyWd -> WHILE
+
+Comparison -> IDENTIFIER RelOps IDENTIFIER
+
+DedentProd -> DEDENT | EOF
+
+ArithOps -> OpAdd
+ArithOps -> OpSub
+ArithOps -> OpMult
+ArithOps -> OpDiv
+ArithOps -> OpPow
+ArithOps -> OpMod
+
+RelOps -> RelEQ
+RelOps -> RelNEQ
+RelOps -> RelLEQ
+RelOps -> RelGEQ
+RelOps -> RelGT
+RelOps -> RelLT
+
+Term -> Factor Term'
+Term' -> ArithOps Factor Term'
+Term' -> Epsilon
+
+Factor -> IDENTIFIER
+Factor -> NUMBER
