@@ -26,9 +26,11 @@ Func_Code -> EOL INDENT expr Func_Code' DedentProd
 Func_Code' -> EOL expr Func_Code'
 Func_Code' -> Epsilon
 
-Array -> IDENTIFIER OpenBrack Factor Array' CloseBrack
+Array -> IDENTIFIER OpenBrack Factor Array' CloseBrack // Check again. Case missing
 Array' -> COMMA Factor Array'
 Array' -> Epsilon
+
+Array_init -> [1,2,3,5,6,4] // Implement
 
 Cond_KeyWd -> IF
 Cond_KeyWd -> ELIF

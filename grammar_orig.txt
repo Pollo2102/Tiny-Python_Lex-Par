@@ -1,32 +1,28 @@
-expr -> assign
-expr -> PrintFunc 
-expr -> ForCall
+expr > EOL* expr' (EOL* (expr' | Epsilon | EOF))* EOF
+expr' -> assign | PrintFunc | ForCall | Cond_Stmt
 
-assign -> IDENTIFIER = assign'
-assign' -> IDENTIFIER ( LITERAL )
-assign' -> FACTOR
+assign -> IDENTIFIER = Factor
 
+func_call -> IDENTIFIER ( Args_List | Epsilon )
 
-PrintFunc -> PRINT PrintArgs*
+PrintFunc -> PRINT PrintArgs
 PrintArgs -> LITERAL Optl_Print_Args
-Optl_Print_Args -> COMMA Optl_Args
-Optl_Print_Args -> Epsilon
-Optl_Args -> Term (COMMA PrintArgs | Epsilon)
-Optl_Args -> Epsilon
+Optl_Print_Args -> , Term Optl_Print_Args' | Epsilon
+Optl_Print_Args' -> PrintArgs | Epsilon
+
+Args_List -> Term (, Term)*
+
 ForCall -> FOR IDENTIFIER IN IDENTIFIER ( Factor , Factor ) : Func_Code
 DefCall -> DEF IDENTIFIER ( Optl_Args ) : Func_Code
 Cond_Stmt -> Cond_KeyWd Comparison: Func_Code
 Else_Stmt -> ELSE : Func_Code
 
-Func_Code -> EOL INDENT expr (EOL expr)* DEDENT
+Func_Code -> EOL INDENT expr (EOL expr')* DEDENT
 
-Array -> IDENTIFIER [ Factor(, Factor)*]
-Cond_KeyWd -> IF
-Cond_KeyWd -> ELIF
-Cond_KeyWd -> WHILE
+Array -> IDENTIFIER [ Args_List ]
+Cond_KeyWd -> IF | ELIF | WHILE
 Comparison -> IDENTIFIER REL_OP IDENTIFIER
 DedentProd -> DEDENT | EOF
 ArithOps -> + | - | * | / | ** | %
 Term -> Factor (ArithOps Factor)*
-Factor -> IDENTIFIER
-Factor -> NUMBER
+Factor -> IDENTIFIER | NUMBER | func_call
