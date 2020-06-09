@@ -36,8 +36,7 @@
 		<state id="6" name="q6">
 			<x>298.0</x>
 			<y>419.0</y>
-			<label>Token::Eol</label>
-			<final/>
+			<label>return indentation_check();</label>
 		</state>
 		<state id="7" name="q7">
 			<x>818.0</x>
@@ -51,31 +50,24 @@
 		</state>
 		<!--The list of transitions.-->
 		<transition>
+			<from>0</from>
+			<to>2</to>
+			<read>-EOL</read>
+		</transition>
+		<transition>
 			<from>4</from>
-			<to>9</to>
-			<read/>
+			<to>2</to>
+			<read>-EOL</read>
 		</transition>
 		<transition>
 			<from>0</from>
-			<to>1</to>
-			<read>EOF</read>
+			<to>5</to>
+			<read>-@</read>
 		</transition>
 		<transition>
-			<from>9</from>
-			<to>0</to>
-			<controlx>100</controlx>
-			<controly>606</controly>
+			<from>4</from>
+			<to>9</to>
 			<read/>
-		</transition>
-		<transition>
-			<from>2</from>
-			<to>3</to>
-			<read>-SPACE</read>
-		</transition>
-		<transition>
-			<from>2</from>
-			<to>4</to>
-			<read>-TAB</read>
 		</transition>
 		<transition>
 			<from>7</from>
@@ -85,8 +77,25 @@
 			<read/>
 		</transition>
 		<transition>
-			<from>3</from>
-			<to>7</to>
+			<from>2</from>
+			<to>3</to>
+			<read>-SPACE</read>
+		</transition>
+		<transition>
+			<from>9</from>
+			<to>0</to>
+			<controlx>100</controlx>
+			<controly>606</controly>
+			<read/>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>EOF</read>
+		</transition>
+		<transition>
+			<from>2</from>
+			<to>6</to>
 			<read/>
 		</transition>
 		<transition>
@@ -95,14 +104,9 @@
 			<read>-EOL</read>
 		</transition>
 		<transition>
-			<from>0</from>
-			<to>2</to>
-			<read>-EOL</read>
-		</transition>
-		<transition>
-			<from>4</from>
-			<to>2</to>
-			<read>-EOL</read>
+			<from>2</from>
+			<to>4</to>
+			<read>-TAB</read>
 		</transition>
 		<transition>
 			<from>3</from>
@@ -115,11 +119,6 @@
 			<read>-SPACE</read>
 		</transition>
 		<transition>
-			<from>0</from>
-			<to>5</to>
-			<read>-@</read>
-		</transition>
-		<transition>
 			<from>4</from>
 			<to>4</to>
 			<read>-TAB</read>
@@ -130,8 +129,8 @@
 			<read>-TAB</read>
 		</transition>
 		<transition>
-			<from>2</from>
-			<to>6</to>
+			<from>3</from>
+			<to>7</to>
 			<read/>
 		</transition>
 		<note>

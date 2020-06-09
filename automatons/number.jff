@@ -53,26 +53,6 @@
 		</state>
 		<!--The list of transitions.-->
 		<transition>
-			<from>1</from>
-			<to>5</to>
-			<read>x</read>
-		</transition>
-		<transition>
-			<from>1</from>
-			<to>5</to>
-			<read>X</read>
-		</transition>
-		<transition>
-			<from>4</from>
-			<to>9</to>
-			<read/>
-		</transition>
-		<transition>
-			<from>2</from>
-			<to>7</to>
-			<read/>
-		</transition>
-		<transition>
 			<from>5</from>
 			<to>5</to>
 			<read>[0-9]</read>
@@ -83,24 +63,39 @@
 			<read>[0-9]</read>
 		</transition>
 		<transition>
+			<from>0</from>
+			<to>4</to>
+			<read>[1-9]</read>
+		</transition>
+		<transition>
 			<from>3</from>
 			<to>3</to>
 			<read>[0-7]</read>
 		</transition>
 		<transition>
-			<from>1</from>
-			<to>2</to>
-			<read>b</read>
-		</transition>
-		<transition>
-			<from>1</from>
-			<to>2</to>
-			<read>B</read>
-		</transition>
-		<transition>
-			<from>3</from>
-			<to>8</to>
+			<from>2</from>
+			<to>7</to>
 			<read/>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>0</read>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>9</to>
+			<read/>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>5</to>
+			<read>x</read>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>5</to>
+			<read>X</read>
 		</transition>
 		<transition>
 			<from>2</from>
@@ -118,24 +113,34 @@
 			<read>1</read>
 		</transition>
 		<transition>
+			<from>5</from>
+			<to>6</to>
+			<read/>
+		</transition>
+		<transition>
+			<from>3</from>
+			<to>8</to>
+			<read/>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>9</to>
+			<read/>
+		</transition>
+		<transition>
 			<from>1</from>
 			<to>3</to>
 			<read>o</read>
 		</transition>
 		<transition>
-			<from>0</from>
-			<to>1</to>
-			<read>0</read>
+			<from>1</from>
+			<to>2</to>
+			<read>b</read>
 		</transition>
 		<transition>
-			<from>0</from>
-			<to>4</to>
-			<read>[1-9]</read>
-		</transition>
-		<transition>
-			<from>5</from>
-			<to>6</to>
-			<read/>
+			<from>1</from>
+			<to>2</to>
+			<read>B</read>
 		</transition>
 		<transition>
 			<from>5</from>

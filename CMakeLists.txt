@@ -12,6 +12,7 @@ add_custom_command (
   DEPENDS ${PROJECT_SOURCE_DIR}/automatons/start.jff
           ${PROJECT_SOURCE_DIR}/automatons/number.jff
           ${PROJECT_SOURCE_DIR}/automatons/ArithOperators.jff
+          ${PROJECT_SOURCE_DIR}/automatons/RelOperators.jff
           ${PROJECT_SOURCE_DIR}/automatons/literal.jff
           ${PROJECT_SOURCE_DIR}/automatons/comment.jff
           ${PROJECT_SOURCE_DIR}/automatons/function_elems.jff

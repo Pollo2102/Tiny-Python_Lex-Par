@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include "parser.h"
 #include <iostream>
 #include <istream>
 
@@ -20,13 +21,17 @@ int main(int argc, char const *argv[])
 
     Lexer lexer(file);
 
-    Token tk = lexer.getNextToken();
+    Parser parser(lexer);
 
-    while (tk != Token::Eof)
-    {
-        std::cout << "Token: " << lexer.tokenToString(tk) << "  Lexema: " << lexer.getText() << "\n";
-        tk = lexer.getNextToken();
-    }
+    parser.parse();
+
+    // Token tk = lexer.getNextToken();
+
+    // while (tk != Token::Eof)
+    // {
+    //     std::cout << "Token: " << lexer.tokenToString(tk) << "  Lexema: " << lexer.getText() << "\n";
+    //     tk = lexer.getNextToken();
+    // }
     
     return 0;
 }

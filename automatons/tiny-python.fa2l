@@ -25,8 +25,10 @@
         KwInput = "Keyword input",
         KwIn = "Keyword in",
         KwWhile = "Keyword while",
+        KwReturn = "Keyword return",
         Indent = "Indentation Token",
-        Dedent = "Dedentation Token"
+        Dedent = "Dedentation Token",
+        Eol = "Eol"
     }
 
     %generate.state_enum(State);
@@ -53,6 +55,8 @@ Token Lexer::findKeyword(const std::string& str)
         return Token::KwIn;
     else if (str == "while")
         return Token::KwWhile;
+    else if (str == "return")
+        return Token::KwReturn;
     else 
         return Token::Identifier;
 }

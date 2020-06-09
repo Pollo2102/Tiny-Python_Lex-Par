@@ -50,7 +50,7 @@
 		<state id="9" name="q9">
 			<x>551.0</x>
 			<y>297.0</y>
-			<label>Token::NEQ</label>
+			<label>Token::RelNEQ</label>
 			<final/>
 		</state>
 		<state id="10" name="q10">
@@ -67,18 +67,18 @@
 		</state>
 		<!--The list of transitions.-->
 		<transition>
-			<from>0</from>
-			<to>3</to>
-			<read>!</read>
+			<from>1</from>
+			<to>6</to>
+			<read/>
 		</transition>
 		<transition>
-			<from>0</from>
-			<to>4</to>
+			<from>1</from>
+			<to>5</to>
 			<read>=</read>
 		</transition>
 		<transition>
-			<from>4</from>
-			<to>11</to>
+			<from>2</from>
+			<to>8</to>
 			<read/>
 		</transition>
 		<transition>
@@ -92,24 +92,9 @@
 			<read>=</read>
 		</transition>
 		<transition>
-			<from>2</from>
-			<to>7</to>
-			<read>=</read>
-		</transition>
-		<transition>
-			<from>1</from>
-			<to>6</to>
-			<read/>
-		</transition>
-		<transition>
 			<from>0</from>
 			<to>1</to>
 			<read>&gt;</read>
-		</transition>
-		<transition>
-			<from>1</from>
-			<to>5</to>
-			<read>=</read>
 		</transition>
 		<transition>
 			<from>0</from>
@@ -117,8 +102,23 @@
 			<read>&lt;</read>
 		</transition>
 		<transition>
+			<from>0</from>
+			<to>3</to>
+			<read>!</read>
+		</transition>
+		<transition>
 			<from>2</from>
-			<to>8</to>
+			<to>7</to>
+			<read>=</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>4</to>
+			<read>=</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>11</to>
 			<read/>
 		</transition>
 		<note>

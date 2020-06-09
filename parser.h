@@ -12,16 +12,39 @@ public:
 private:
 	void expr();
 	void exprP();
-	void term();
-	void factor();
+
+
 	void assign();
-	void PrintFunc();
-	void ForCall();
-	void Cond_Stmt();
+
 	void func_call();
-	void Args_List();
+
+	void PrintFunc();
 	void PrintArgs();
 	void Optl_Print_Args();
+	void Optl_Print_ArgsP();
+
+	void Args_List();
+	void Args_ListP();
+
+	void ForCall();
+	void DefCall();
+	void Return_Stmt();
+	void Cond_Stmt();
+	void Else_Stmt();
+
+	void Func_Code();
+	void Func_CodeP();
+
+	void Array();
+	void Cond_KeyWd();
+	void Comparison();
+	void DedentProd();
+	void ArithOps();
+	void Rel_Op();
+	void term();
+	void termP();
+	void factor();
+	void factorP();
 
 private:
 	Token currToken;
