@@ -36,4 +36,5 @@ Term' -> Epsilon
 Factor -> NUMBER
 Factor -> IDENTIFIER FactorP
 FactorP -> ( Args_List | Epsilon )
+FactorP -> [ Args_List ]
 FactorP -> Epsilon

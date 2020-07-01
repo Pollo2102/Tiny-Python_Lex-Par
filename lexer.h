@@ -27,6 +27,7 @@ public:
     Token findKeyword(const std::string& str);
     Token indentation_check();
     Token contains_dedentation();
+    Token skip_eol();
     static const char *tokenToString(Token tk);
 
 private:

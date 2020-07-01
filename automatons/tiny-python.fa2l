@@ -27,8 +27,7 @@
         KwWhile = "Keyword while",
         KwReturn = "Keyword return",
         Indent = "Indentation Token",
-        Dedent = "Dedentation Token",
-        Eol = "Eol"
+        Dedent = "Dedentation Token"
     }
 
     %generate.state_enum(State);
@@ -45,7 +44,7 @@ Token Lexer::findKeyword(const std::string& str)
         return Token::KwElif;
     else if (str == "else")
         return Token::KwElse;
-    else if (str == "for")
+    else if (str == "for" || str == "or")
         return Token::KwFor;
     else if (str == "print")
         return Token::KwPrint;
@@ -62,12 +61,22 @@ Token Lexer::findKeyword(const std::string& str)
 }
 
 Token Lexer::indentation_check() {
+    std::cout << "Current indentation: " << indentation_stack.top() << "\n";
+    if (current_indentation == 0) {
+        for (int i = 0; i < indentation_stack.size(); i++)
+        {
+            indentation_stack.pop();
+        }
+        indentation_stack.push(0);
+        return Token::Eol;
+    }
     if (current_indentation != indentation_stack.top())
         checking_indentation = true;
     return Token::Eol;
 }
 
 Token Lexer::contains_dedentation() {
+    std::cout << "Indentation evaluation start.\n";
     if (current_indentation > indentation_stack.top()) {
         indentation_stack.push(current_indentation);
         checking_indentation = false;
@@ -87,6 +96,11 @@ Token Lexer::contains_dedentation() {
     else {
         throw "Indentation error!\n";
     }    
+}
+
+Token Lexer::skip_eol() {
+    ungetChar(1);
+    return Token::Eol;
 }
 
 Token Lexer::getNextToken()

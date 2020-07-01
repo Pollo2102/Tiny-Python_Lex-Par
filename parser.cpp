@@ -82,7 +82,7 @@ void Parser::assign()
 		currToken = lexer.getNextToken();
 
 		if (currToken != Token::OpAssign) {
-			std::cout << "Invalid token at assign. Expected OpAssign but got: " << lexer.tokenToString(currToken) << "\n";
+			std::cout << "Invalid token at assign. Expected OpAssign but got: " << lexer.tokenToString(currToken) << " with value: " << lexer.getText() << "\n";
 			throw 1;
 		}
 		currToken = lexer.getNextToken();
@@ -172,6 +172,7 @@ void Parser::Args_ListP()
 	if (currToken == Token::Comma) {
 		currToken = lexer.getNextToken();
 		term();
+		Args_ListP();
 	}
 }
 
@@ -204,7 +205,7 @@ void Parser::ForCall()
 		}
 		currToken = lexer.getNextToken();
 
-		factor();
+		term();
 
 		if (currToken != Token::Comma) {
 			std::cout << "Invalid token at ForCall. Expected Comma but got: " << lexer.tokenToString(currToken) << "\n";
@@ -212,7 +213,7 @@ void Parser::ForCall()
 		}
 		currToken = lexer.getNextToken();
 
-		factor();
+		term();
 
 		if (currToken != Token::Close_Par) {
 			std::cout << "Invalid token at ForCall. Expected Close_Par but got: " << lexer.tokenToString(currToken) << "\n";
@@ -329,6 +330,7 @@ void Parser::Func_Code()
 		currToken = lexer.getNextToken();
 
 		if (currToken != Token::Indent) {
+			std::cout << "Current token1: " << lexer.tokenToString(currToken) << " with value: " << lexer.getText() << "\n";
 			std::cout << "Invalid token at Func_Code. Expected Indent but got: " << lexer.tokenToString(currToken) << "\n";
 			throw 1;
 		}
@@ -464,7 +466,7 @@ void Parser::termP()
 
 void Parser::factor()
 {
-	if (currToken == Token::Identifier || currToken == Token::KwInput || currToken == Token::Literal) {
+	if (currToken == Token::Identifier || currToken == Token::KwInput || currToken == Token::Literal || currToken == Token::Open_Br) {
 		currToken = lexer.getNextToken();
 
 		factorP();
@@ -487,6 +489,16 @@ void Parser::factorP()
 		}
 		if (currToken != Token::Close_Par) {
 			std::cout << "Invalid token at factorP. Expected Close_Par but got: " << lexer.tokenToString(currToken) << "\n";
+			throw 1;
+		}
+		currToken = lexer.getNextToken();
+	}
+	else if (currToken == Token::Open_Br) {
+		currToken = lexer.getNextToken();
+		Args_List();
+
+		if (currToken != Token::Close_Br) {
+			std::cout << "Invalid token at factorP. Expected Close_Br but got: " << lexer.tokenToString(currToken) << "\n";
 			throw 1;
 		}
 		currToken = lexer.getNextToken();
