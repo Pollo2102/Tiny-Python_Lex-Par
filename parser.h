@@ -17,6 +17,7 @@ private:
 
 
 	Ast::NodePtr assign();
+	Ast::NodePtr inputFunc();
 
 	void func_call();
 
@@ -46,7 +47,7 @@ private:
 	Ast::NodePtr term();
 	Ast::NodePtr termP(Ast::NodePtr);
 	Ast::NodePtr factor();
-	Ast::NodePtr factorP();
+	Ast::NodePtr factorP(Ast::NodePtr);
 
 private:
 	Token currToken;

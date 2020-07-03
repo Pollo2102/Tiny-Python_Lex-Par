@@ -206,11 +206,11 @@ namespace Ast
             auto var = vars.find(varName);
             if (var == vars.end())
             {
-                vars.emplace(varName, eval(asgn->getExpr(), vars));
+                vars.emplace(varName, std::make_shared<Number>(eval(asgn->getExpr(), vars)));
             }
             else
             {
-                var->second = eval(asgn->getExpr(), vars);
+                var->second = std::make_shared<Number>(eval(asgn->getExpr(), vars));
             }
             return 0;
         }
@@ -228,12 +228,22 @@ namespace Ast
             NodePtr expr2 = reinterpret_cast<PrintArgs *>(node.get())->getExpr2();
             if (expr1->getKind() == Kind::Literal) {
                 std::string val = reinterpret_cast<Literal *>(expr1.get())->getLiteralValue();
+                if (val.size() > 1)
+                {
+                    val.pop_back();
+                    val = val.substr(1);
+                }
                 std::cout << val;
             }
             else
                 std::cout << eval(expr1, vars);
             if (expr2->getKind() == Kind::Literal) {
                 std::string val = reinterpret_cast<Literal *>(expr2.get())->getLiteralValue();
+                if (val.size() > 1)
+                {
+                    val.pop_back();
+                    val = val.substr(1);
+                }
                 std::cout << val;
             }
             else
@@ -283,6 +293,16 @@ namespace Ast
             return eval(expr1, vars) % eval(expr2 ,vars);
         }
 
+        case Kind::Input:
+        {
+            Input * input = reinterpret_cast<Input *>(node.get());
+            std::string outMsg = input->getOutString();
+            std::cout << outMsg;
+            std::string value;
+            std::cin >> value;
+            return std::stoi(value);
+        }
+
         case Kind::Number:
         {
             Number * num = reinterpret_cast<Number *>(node.get());
@@ -300,7 +320,7 @@ namespace Ast
             }
             else
             {
-                return var->second;
+                return reinterpret_cast<Number *>(var->second.get())->getValue();
             }
         }
 

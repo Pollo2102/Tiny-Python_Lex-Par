@@ -96,7 +96,14 @@ Ast::NodePtr Parser::assign()
 		}
 		currToken = lexer.getNextToken();
 
-		Ast::NodePtr expression = term();
+		Ast::NodePtr expression;
+
+		if (currToken == Token::KwInput) {
+			expression = inputFunc();
+		}
+		else
+			expression = term();
+
 
 		return std::make_shared<Ast::Assign>(varName, expression);
 	}
@@ -104,6 +111,34 @@ Ast::NodePtr Parser::assign()
 		std::cout << "Syntax error at assign.";
 		throw 1;
 	}
+}
+
+Ast::NodePtr Parser::inputFunc()
+{
+	currToken = lexer.getNextToken();
+	if (currToken != Token::Open_Par) {
+		std::cout << "Invalid token at inputFunc. Expected Open_Par but got: " << lexer.tokenToString(currToken) << " with value: " << lexer.getText() << "\n";
+			throw 1;
+	}
+	currToken = lexer.getNextToken();
+
+	std::string str;
+	if (currToken == Token::Literal)
+	{
+		str = lexer.getText();
+		str.pop_back();
+		str = str.substr(1);
+	}
+	currToken = lexer.getNextToken();
+	// std::string in;
+	// std::cin >> in;
+	if (currToken != Token::Close_Par) {
+		std::cout << "Invalid token at inputFunc. Expected Close_Par but got: " << lexer.tokenToString(currToken) << " with value: " << lexer.getText() << "\n";
+		throw 1;
+	}
+	currToken = lexer.getNextToken();
+
+	return std::make_shared<Ast::Input>(str);
 }
 
 void Parser::func_call()
@@ -517,23 +552,26 @@ Ast::NodePtr Parser::factor()
 	if (currToken == Token::Identifier) {
 		std::string value = lexer.getText();
 		currToken = lexer.getNextToken();
+		Ast::NodePtr val = std::make_shared<Ast::Ident>(value);
 		if (currToken != Token::Open_Par && currToken != Token::Open_Br) {
 			return std::make_shared<Ast::Ident>(value);
 		}
 		else {
-			return factorP();
+			return factorP(val);
 		}
 	}
-	else if (currToken == Token::KwInput) { // Create class
-		currToken = lexer.getNextToken();
+	// else if (currToken == Token::KwInput) { // Create class
+	// 	currToken = lexer.getNextToken();
 
-		return factorP();
-	}
+	// 	return factorP();
+	// }
 	else if (currToken == Token::Literal) {
 		std::string value = lexer.getText();
 		currToken = lexer.getNextToken();
 
-		factorP();
+		Ast::NodePtr val = std::make_shared<Ast::Literal>(value);
+
+		factorP(val);
 		return std::make_shared<Ast::Literal>(value);
 	}
 	else if (currToken == Token::Dec) {
@@ -547,7 +585,7 @@ Ast::NodePtr Parser::factor()
 	}
 }
 
-Ast::NodePtr Parser::factorP()
+Ast::NodePtr Parser::factorP(Ast::NodePtr valueI)
 {
 	if (currToken == Token::Open_Par) {
 		currToken = lexer.getNextToken();
@@ -573,7 +611,6 @@ Ast::NodePtr Parser::factorP()
 		return nullptr; // Finish
 	}
 	else {
-		std::cout << "Invalid token at factorP. Wrong Token.\n";
-		throw 1;
+		return valueI;
 	}
 }

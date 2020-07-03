@@ -11,7 +11,7 @@ namespace Ast {
 
     class Node;
     using NodePtr = std::shared_ptr<Node>;
-    using SymbolTable = std::unordered_map<std::string, int>;
+    using SymbolTable = std::unordered_map<std::string, NodePtr>;
 
     //RTTI
     enum class Kind {
@@ -34,6 +34,7 @@ namespace Ast {
         Return,
         FuncCall,
         Literal,
+        Input,
     };
     
     class Node {
@@ -267,6 +268,24 @@ namespace Ast {
 
     private:
         int num;
+    };
+
+    class Input: public Node {
+    public:
+        Input(std::string input): outMsg(input) 
+        {
+        }
+
+        Kind getKind() const override { return Kind::Input; }
+        const std::string& getOutString() { return outMsg; }
+        int getValue() const override { 
+            std::cout << "Invalid call. (Input)\n";
+            throw 1;
+            return 0;
+        }
+
+    private:
+        std::string outMsg;
     };
 
     class Sequence: public Node {

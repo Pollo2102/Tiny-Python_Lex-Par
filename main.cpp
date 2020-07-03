@@ -25,6 +25,7 @@ int main(int argc, char const *argv[])
 
     Ast::NodePtr root = parser.parse();
 
+    std::cout << "Parsing complete\n";
 
     Ast::SymbolTable symTable;
 
