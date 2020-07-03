@@ -35,6 +35,7 @@ Term' -> (ArithOps | Rel_Op) Factor Term'
 Term' -> Epsilon
 Factor -> NUMBER
 Factor -> IDENTIFIER FactorP
+Factor -> Literal
 FactorP -> ( Args_List | Epsilon )
 FactorP -> [ Args_List ]
 FactorP -> Epsilon

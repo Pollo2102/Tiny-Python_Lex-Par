@@ -1,24 +1,27 @@
 #include "parser.h"
 
-void Parser::parse()
+Ast::NodePtr Parser::parse()
 {
     currToken = lexer.getNextToken();
-        expr();
+        Ast::NodePtr node = expr();
 
 		if (currToken != Token::Eof) {
 			std::cout << "Syntax error: Invalid token: " << lexer.tokenToString(currToken) << "\n";
+			throw 1;
 		}
 		else {
 			std::cout << "Input parsed successfully.\n";
+			return node;
 		}
 }
 
-void Parser::expr()
+Ast::NodePtr Parser::expr()
 {
     while (currToken == Token::Eol) {
 		currToken = lexer.getNextToken();
 	}
-	exprP();
+	std::vector<Ast::NodePtr> code;
+	code.push_back(exprP());
 
 	while (currToken == Token::Eol) {
 		currToken = lexer.getNextToken();
@@ -26,16 +29,20 @@ void Parser::expr()
 			break;
 		}
 		else if (currToken != Token::Eol) {
-			exprP();
+			code.push_back(exprP());
 		}
 	}
 
 	if (currToken == Token::Eof) {
-		return;
+		return std::make_shared<Ast::Sequence>(code);
+	}
+	else {
+		std::cout << "Syntax error.\n";
+		throw 1;
 	}
 }
 
-void Parser::exprP()
+Ast::NodePtr Parser::exprP()
 {
 	if (currToken == Token::Dedent) {
 		currToken = lexer.getNextToken();
@@ -46,10 +53,10 @@ void Parser::exprP()
 		}
 	}
 	if (currToken == Token::Identifier) {
-		assign();
+		return assign();
 	}
 	else if (currToken == Token::KwPrint) {
-		PrintFunc();
+		return PrintFunc();
 	}
 	else if (currToken == Token::KwFor) {
 		ForCall();
@@ -65,7 +72,7 @@ void Parser::exprP()
 		DefCall();
 	}
 	else if (currToken == Token::Eof){
-		return;
+		return nullptr;
 	}
 	else if (currToken == Token::KwReturn) {
 		Return_Stmt();
@@ -76,9 +83,11 @@ void Parser::exprP()
 	}
 }
 
-void Parser::assign()
+Ast::NodePtr Parser::assign()
 {
 	if (currToken == Token::Identifier) {
+		std::string varName = lexer.getText();
+
 		currToken = lexer.getNextToken();
 
 		if (currToken != Token::OpAssign) {
@@ -87,7 +96,13 @@ void Parser::assign()
 		}
 		currToken = lexer.getNextToken();
 
-		term();
+		Ast::NodePtr expression = term();
+
+		return std::make_shared<Ast::Assign>(varName, expression);
+	}
+	else {
+		std::cout << "Syntax error at assign.";
+		throw 1;
 	}
 }
 
@@ -118,11 +133,11 @@ void Parser::func_call()
 	}
 }
 
-void Parser::PrintFunc()
+Ast::NodePtr Parser::PrintFunc()
 {
 	if (currToken == Token::KwPrint) {
 		currToken = lexer.getNextToken();
-		PrintArgs();
+		return std::make_shared<Ast::Print>(PrintArgs());
 	}
 	else {
 		std::cout << "Invalid token at PrintFunc. Expected KwPrint but got: " << lexer.tokenToString(currToken) << "\n";
@@ -130,11 +145,12 @@ void Parser::PrintFunc()
 	}
 }
 
-void Parser::PrintArgs() 
+Ast::NodePtr Parser::PrintArgs() 
 {
 	if (currToken == Token::Literal) {
+		Ast::NodePtr lit = std::make_shared<Ast::Literal>(lexer.getText());
 		currToken = lexer.getNextToken();
-		Optl_Print_Args();
+		return std::make_shared<Ast::PrintArgs>(lit, Optl_Print_Args());
 	}
 	else {
 		std::cout << "Invalid token at PrintArgs. Expected Literal but got: " << lexer.tokenToString(currToken) << "\n";
@@ -142,22 +158,27 @@ void Parser::PrintArgs()
 	}
 }
 
-void Parser::Optl_Print_Args()
+Ast::NodePtr Parser::Optl_Print_Args()
 {
 	if (currToken == Token::Comma) {
 		currToken = lexer.getNextToken();
-
-		term();
-		Optl_Print_ArgsP();
+		Ast::NodePtr valueI = term();
+		return std::make_shared<Ast::PrintArgs>(valueI, Optl_Print_Args());
+	}
+	else {
+		return std::make_shared<Ast::Literal>("\n");
 	}
 }
 
-void Parser::Optl_Print_ArgsP()
+Ast::NodePtr Parser::Optl_Print_ArgsP()
 {
 	if (currToken == Token::Comma)
 	{
 		currToken = lexer.getNextToken();
-		PrintArgs();
+		return PrintArgs();
+	}
+	else {
+		return std::make_shared<Ast::Literal>("\n");
 	}
 }
 
@@ -441,38 +462,84 @@ void Parser::Rel_Op()
 	}
 }
 
-void Parser::term()
+Ast::NodePtr Parser::term()
 {
-	factor();
-	termP();
+	Ast::NodePtr valueI = factor();
+	return termP(valueI);
 }
 
-void Parser::termP()
+Ast::NodePtr Parser::termP(Ast::NodePtr valueI) // Redo for AST
 {
-	if (currToken == Token::OpAdd || currToken == Token::OpSub || currToken == Token::OpMult || currToken == Token::OpDiv
-		|| currToken == Token::OpPow || currToken == Token::OpMod) {
+	if (currToken == Token::OpAdd) {
 
 		ArithOps();
-		factor();
-		termP();
+		Ast::NodePtr valueI2 = factor();
+		return std::make_shared<Ast::Add>(valueI, termP(valueI2));
+	}
+	else if (currToken == Token::OpSub) {
+		ArithOps();
+		Ast::NodePtr valueI2 = factor();
+		return std::make_shared<Ast::Sub>(valueI, termP(valueI2));
+	}
+	else if (currToken == Token::OpMult) {
+		ArithOps();
+		Ast::NodePtr valueI2 = factor();
+		return std::make_shared<Ast::Mult>(valueI, termP(valueI2));
+	}
+	else if (currToken == Token::OpDiv) {
+		ArithOps();
+		Ast::NodePtr valueI2 = factor();
+		return std::make_shared<Ast::Div>(valueI, termP(valueI2));
+	}
+	else if (currToken == Token::OpPow) {
+		ArithOps();
+		Ast::NodePtr valueI2 = factor();
+		return std::make_shared<Ast::Pow>(valueI, termP(valueI2));
+	}
+	else if (currToken == Token::OpMod) {
+		ArithOps();
+		Ast::NodePtr valueI2 = factor();
+		return std::make_shared<Ast::Pow>(valueI, termP(valueI2));
 	}
 	else if (currToken == Token::RelEQ || currToken == Token::RelNEQ || currToken == Token::RelGT || currToken == Token::RelGTE
 		|| currToken == Token::RelLT || currToken == Token::RelLTE) {
+		std::string RelOp = lexer.getText();
 		Rel_Op();
-		factor();
-		termP();
+		Ast::NodePtr ValueI2 = factor();
+		return std::make_shared<Ast::Compare>(valueI, RelOp, termP(ValueI2));
 	}
+	else
+		return valueI;
 }
 
-void Parser::factor()
+Ast::NodePtr Parser::factor()
 {
-	if (currToken == Token::Identifier || currToken == Token::KwInput || currToken == Token::Literal || currToken == Token::Open_Br) {
+	if (currToken == Token::Identifier) {
+		std::string value = lexer.getText();
+		currToken = lexer.getNextToken();
+		if (currToken != Token::Open_Par && currToken != Token::Open_Br) {
+			return std::make_shared<Ast::Ident>(value);
+		}
+		else {
+			return factorP();
+		}
+	}
+	else if (currToken == Token::KwInput) { // Create class
+		currToken = lexer.getNextToken();
+
+		return factorP();
+	}
+	else if (currToken == Token::Literal) {
+		std::string value = lexer.getText();
 		currToken = lexer.getNextToken();
 
 		factorP();
+		return std::make_shared<Ast::Literal>(value);
 	}
 	else if (currToken == Token::Dec) {
+		int value = std::stoi(lexer.getText());
 		currToken = lexer.getNextToken();
+		return std::make_shared<Ast::Number>(value);
 	}
 	else {
 		std::cout << "Invalid token at factor. Expected an Identifier or a Number but got: " << lexer.tokenToString(currToken) << "\n";
@@ -480,18 +547,19 @@ void Parser::factor()
 	}
 }
 
-void Parser::factorP()
+Ast::NodePtr Parser::factorP()
 {
 	if (currToken == Token::Open_Par) {
 		currToken = lexer.getNextToken();
 		if (currToken == Token::Identifier || currToken == Token::Dec || currToken == Token::Literal) {
 			Args_List();
-		}
+		} 
 		if (currToken != Token::Close_Par) {
 			std::cout << "Invalid token at factorP. Expected Close_Par but got: " << lexer.tokenToString(currToken) << "\n";
 			throw 1;
 		}
 		currToken = lexer.getNextToken();
+		return nullptr; // Finish
 	}
 	else if (currToken == Token::Open_Br) {
 		currToken = lexer.getNextToken();
@@ -502,5 +570,10 @@ void Parser::factorP()
 			throw 1;
 		}
 		currToken = lexer.getNextToken();
+		return nullptr; // Finish
+	}
+	else {
+		std::cout << "Invalid token at factorP. Wrong Token.\n";
+		throw 1;
 	}
 }

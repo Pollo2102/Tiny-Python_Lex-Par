@@ -12,7 +12,7 @@ namespace Ast
             case Kind::Sequence:
             {
                 str = "";
-                for(const NodePtr s: reinterpret_cast<Sequence *>(node.get())->getStatements())
+                for(const auto& s: reinterpret_cast<Sequence *>(node.get())->getStatements())
                 {
                     str += toString(s) + "\n";
                 }
@@ -60,6 +60,33 @@ namespace Ast
                     "(" + toString(value2) + ")";
             }
 
+            case Kind::Div:
+            {
+                Mult * tmp = reinterpret_cast<Mult *>(node.get());
+                NodePtr value1 = tmp->getExpr1();
+                NodePtr value2 = tmp->getExpr2();
+                return "(" + toString(value1) + ") / " +
+                    "(" + toString(value2) + ")";
+            }
+
+            case Kind::Pow:
+            {
+                Mult * tmp = reinterpret_cast<Mult *>(node.get());
+                NodePtr value1 = tmp->getExpr1();
+                NodePtr value2 = tmp->getExpr2();
+                return "(" + toString(value1) + ") ** " +
+                    "(" + toString(value2) + ")";
+            }
+
+            case Kind::Mod:
+            {
+                Mult * tmp = reinterpret_cast<Mult *>(node.get());
+                NodePtr value1 = tmp->getExpr1();
+                NodePtr value2 = tmp->getExpr2();
+                return "(" + toString(value1) + ") % " +
+                    "(" + toString(value2) + ")";
+            }
+
             case Kind::Number:
             {
                 return std::to_string(reinterpret_cast<Number *>(node.get())->getValue());
@@ -88,7 +115,29 @@ namespace Ast
             {
                 NodePtr expr1 = reinterpret_cast<Compare *>(node.get())->getExpr1();
                 NodePtr expr2 = reinterpret_cast<Compare *>(node.get())->getExpr2();
-                return toString(expr1) + " == " + toString(expr2) + "\n";
+                std::string RelOp = reinterpret_cast<Compare *>(node.get())->getRelOp();
+                if (RelOp == "==") {
+                    return toString(expr1) + " == " + toString(expr2);
+                }
+                else if (RelOp == "!=") {
+                    return toString(expr1) + " != " + toString(expr2);
+                }
+                else if (RelOp == ">") {
+                    return toString(expr1) + " > " + toString(expr2);
+                }
+                else if (RelOp == ">=") {
+                    return toString(expr1) + " >= " + toString(expr2);
+                }
+                else if (RelOp == "<") {
+                    return toString(expr1) + " < " + toString(expr2);
+                }
+                else if (RelOp == "<=") {
+                    return toString(expr1) + " >= " + toString(expr2);
+                }
+                else {
+                    std::cout << "Invalid operator.\n";
+                    throw 1;
+                }
             }
 
             case Kind::Return:
@@ -129,6 +178,8 @@ namespace Ast
                         + "(" + arguments + ")";
             }
 
+            
+
             default:
                 std::cout << "Invalid Kind. \n";
                 throw 1;
@@ -166,8 +217,27 @@ namespace Ast
 
         case Kind::Print:
         {
-            Print * prnt = reinterpret_cast<Print *>(node.get());
-            std::cout << eval(prnt->getExpr(), vars) << "\n";
+            NodePtr prnt = reinterpret_cast<Print *>(node.get())->getExpr();
+            eval(prnt, vars);
+            return 0;
+        }
+
+        case Kind::PrintArgs:
+        {
+            NodePtr expr1 = reinterpret_cast<PrintArgs *>(node.get())->getExpr1();
+            NodePtr expr2 = reinterpret_cast<PrintArgs *>(node.get())->getExpr2();
+            if (expr1->getKind() == Kind::Literal) {
+                std::string val = reinterpret_cast<Literal *>(expr1.get())->getLiteralValue();
+                std::cout << val;
+            }
+            else
+                std::cout << eval(expr1, vars);
+            if (expr2->getKind() == Kind::Literal) {
+                std::string val = reinterpret_cast<Literal *>(expr2.get())->getLiteralValue();
+                std::cout << val;
+            }
+            else
+                std::cout << eval(expr2, vars);
             return 0;
         }
 
@@ -190,6 +260,27 @@ namespace Ast
             NodePtr expr1 = reinterpret_cast<Mult *>(node.get())->getExpr1();
             NodePtr expr2 = reinterpret_cast<Mult *>(node.get())->getExpr2();
             return eval(expr1, vars) * eval(expr2 ,vars);
+        }
+
+        case Kind::Div:
+        {
+            NodePtr expr1 = reinterpret_cast<Mult *>(node.get())->getExpr1();
+            NodePtr expr2 = reinterpret_cast<Mult *>(node.get())->getExpr2();
+            return eval(expr1, vars) / eval(expr2 ,vars);
+        }
+
+        case Kind::Pow:
+        {
+            NodePtr expr1 = reinterpret_cast<Mult *>(node.get())->getExpr1();
+            NodePtr expr2 = reinterpret_cast<Mult *>(node.get())->getExpr2();
+            return pow(eval(expr1, vars), eval(expr2 ,vars));
+        }
+
+        case Kind::Mod:
+        {
+            NodePtr expr1 = reinterpret_cast<Mult *>(node.get())->getExpr1();
+            NodePtr expr2 = reinterpret_cast<Mult *>(node.get())->getExpr2();
+            return eval(expr1, vars) % eval(expr2 ,vars);
         }
 
         case Kind::Number:
@@ -238,11 +329,29 @@ namespace Ast
         {
             NodePtr expr1 = reinterpret_cast<Compare *>(node.get())->getExpr1();
             NodePtr expr2 = reinterpret_cast<Compare *>(node.get())->getExpr2();
-            if (eval(expr1, vars) == eval(expr2, vars)) {
-                return 1;
+            std::string RelOp = reinterpret_cast<Compare *>(node.get())->getRelOp();
+            if (RelOp == "==") {
+                return eval(expr1, vars) == eval(expr2, vars);
             }
-            else
-                return 0;
+            else if (RelOp == "!=") {
+                return eval(expr1, vars) != eval(expr2, vars);
+            }
+            else if (RelOp == ">") {
+                return eval(expr1, vars) > eval(expr2, vars);
+            }
+            else if (RelOp == ">=") {
+                return eval(expr1, vars) >= eval(expr2, vars);
+            }
+            else if (RelOp == "<") {
+                return eval(expr1, vars) < eval(expr2, vars);
+            }
+            else if (RelOp == "<=") {
+                return eval(expr1, vars) <= eval(expr2, vars);
+            }
+            else {
+                std::cout << "Invalid operator.\n";
+                throw 1;
+            }
 
         }
 

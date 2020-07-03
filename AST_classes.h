@@ -5,6 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
+#include <cmath>
 
 namespace Ast {
 
@@ -17,9 +18,13 @@ namespace Ast {
         Sequence,
         Assign,
         Print,
+        PrintArgs,
         Add,
         Sub,
         Mult,
+        Div,
+        Pow,
+        Mod,
         Number,
         Ident,
         IfStmt,
@@ -28,6 +33,7 @@ namespace Ast {
         FuncDecl,
         Return,
         FuncCall,
+        Literal,
     };
     
     class Node {
@@ -127,9 +133,97 @@ namespace Ast {
         NodePtr second;
     };
 
+    class Div: public Node {
+    public:
+        Div(NodePtr f, NodePtr s): first(f), second(s) 
+        {
+        }
+
+        Kind getKind() const override { return Kind::Div; }
+        int getValue() const override
+        {
+            int a = first->getValue();
+            int b = second->getValue();
+            return a / b;
+        }
+
+        const NodePtr& getExpr1() const
+        {
+            return first;
+        }
+
+        const NodePtr& getExpr2() const
+        {
+            return second;
+        }
+
+    private:
+        NodePtr first;
+        NodePtr second;
+    };
+
+    class Pow: public Node {
+    public:
+        Pow(NodePtr f, NodePtr s): first(f), second(s) 
+        {
+        }
+
+        Kind getKind() const override { return Kind::Pow; }
+        int getValue() const override
+        {
+            int a = first->getValue();
+            int b = second->getValue();
+            return pow(a, b);
+        }
+
+        const NodePtr& getExpr1() const
+        {
+            return first;
+        }
+
+        const NodePtr& getExpr2() const
+        {
+            return second;
+        }
+
+    private:
+        NodePtr first;
+        NodePtr second;
+    };
+    
+    class Mod: public Node {
+    public:
+        Mod(NodePtr f, NodePtr s): first(f), second(s) 
+        {
+        }
+
+        Kind getKind() const override { return Kind::Mod; }
+        int getValue() const override
+        {
+            int a = first->getValue();
+            int b = second->getValue();
+            return a % b;
+        }
+
+        const NodePtr& getExpr1() const
+        {
+            return first;
+        }
+
+        const NodePtr& getExpr2() const
+        {
+            return second;
+        }
+
+    private:
+        NodePtr first;
+        NodePtr second;
+    };
+
     class Compare: public Node {
     public:
-        Compare(NodePtr f, NodePtr s): first(f), second(s) 
+        Compare(NodePtr f, std::string ROp, NodePtr s): 
+        first(f), RelOp(ROp), second(s) 
         {
         }
 
@@ -151,8 +245,14 @@ namespace Ast {
             return second;
         }
 
+        const std::string& getRelOp() const
+        {
+            return RelOp;
+        }
+
     private:
         NodePtr first;
+        std::string RelOp;
         NodePtr second;
     };
 
@@ -246,6 +346,40 @@ namespace Ast {
 
     private:
         NodePtr expr;
+    };
+
+    class PrintArgs: public Node {
+    public:
+        PrintArgs(NodePtr expr1, NodePtr expr2)
+        : expr1(expr1), expr2(expr2) 
+        {
+        }
+
+        Kind getKind() const override 
+        { 
+            return Kind::PrintArgs;
+        }
+        
+        const NodePtr& getExpr1() const
+        {
+            return expr1;
+        }
+
+        const NodePtr& getExpr2() const
+        {
+            return expr2;
+        }
+        
+        int getValue() const override {
+            std::cout << "Invalid call. (PrintArgs)\n";
+            throw 1;
+            return 0;
+        }
+
+
+    private:
+        NodePtr expr1;
+        NodePtr expr2;
     };
 
     class Ident: public Node {
@@ -406,6 +540,26 @@ namespace Ast {
     private:
         std::string funcName;
         std::vector<Ast::NodePtr> args;
+    };
+
+    class Literal: public Node {
+    public:
+        Literal(std::string literal): 
+        literalValue(literal)
+        {
+        }
+
+        Kind getKind() const override { return Kind::Literal; }
+        int getValue() const override
+        {
+            std::cout << "Invalid call. (Literal)\n";
+            throw 1; 
+        }
+
+        const std::string& getLiteralValue() const { return literalValue; }
+
+    private:
+        std::string literalValue;
     };
 }
 

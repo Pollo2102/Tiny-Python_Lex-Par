@@ -23,7 +23,14 @@ int main(int argc, char const *argv[])
 
     Parser parser(lexer);
 
-    parser.parse();
+    Ast::NodePtr root = parser.parse();
+
+
+    Ast::SymbolTable symTable;
+
+    // Ast::toString(root);
+
+    Ast::eval(root, symTable);
 
     // Token tk = lexer.getNextToken();
 
