@@ -63,7 +63,7 @@ Ast::NodePtr Parser::exprP()
 	}
 	else if (currToken == Token::KwIf || currToken == Token::KwElif || currToken == Token::KwWhile)
 	{
-		Cond_Stmt();
+		return Cond_Stmt();
 	}
 	else if (currToken == Token::KwElse) {
 		Else_Stmt();
@@ -346,9 +346,16 @@ void Parser::Return_Stmt()
 	}
 }
 
-void Parser::Cond_Stmt()
+Ast::NodePtr Parser::Cond_Stmt()
 {
-	Cond_KeyWd();
+	if (currToken == Token::KwIf || currToken == Token::KwElif || currToken == Token::KwWhile) {
+		currToken = lexer.getNextToken();
+	}
+	else {
+		std::cout << "Invalid token at Cond_Stmt. Expected CondKeyWd but got: " << lexer.tokenToString(currToken) << "\n";
+		throw 1;
+	}
+	// Cond_KeyWd();
 	term();
 
 	if (currToken != Token::Colon) {
@@ -358,6 +365,11 @@ void Parser::Cond_Stmt()
 	currToken = lexer.getNextToken();
 
 	Func_Code();
+
+	// if (currToken == Token::KwElif) {
+
+	// }
+	// else if (currToken == Token::KwElse)
 }
 
 void Parser::Else_Stmt()
@@ -534,7 +546,7 @@ Ast::NodePtr Parser::termP(Ast::NodePtr valueI) // Redo for AST
 	else if (currToken == Token::OpMod) {
 		ArithOps();
 		Ast::NodePtr valueI2 = factor();
-		return std::make_shared<Ast::Pow>(valueI, termP(valueI2));
+		return std::make_shared<Ast::Mod>(valueI, termP(valueI2));
 	}
 	else if (currToken == Token::RelEQ || currToken == Token::RelNEQ || currToken == Token::RelGT || currToken == Token::RelGTE
 		|| currToken == Token::RelLT || currToken == Token::RelLTE) {

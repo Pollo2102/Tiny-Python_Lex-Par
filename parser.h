@@ -32,7 +32,7 @@ private:
 	void ForCall();
 	void DefCall();
 	void Return_Stmt();
-	void Cond_Stmt();
+	Ast::NodePtr Cond_Stmt();
 	void Else_Stmt();
 
 	void Func_Code();
